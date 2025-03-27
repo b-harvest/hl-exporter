@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
 
@@ -350,6 +351,11 @@ func cleanupHeartbeatMap(threshold time.Duration) {
 // processLogLine parses a single JSON log line from consensus logs,
 // and updates relevant metrics. (including lastConsensusLogReadTS)
 func processLogLine(line string, shortValidator string) {
+	line = strings.TrimSpace(line)
+	if len(line) == 0 || !strings.HasPrefix(line, "[") {
+		logWarn("Skipping non-JSON line: %s", line)
+		return
+	}
 	var logEntry []interface{}
 	if err := json.Unmarshal([]byte(line), &logEntry); err != nil {
 		logError("Error unmarshaling consensus line: %v", err)
