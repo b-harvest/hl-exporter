@@ -266,8 +266,8 @@ func tailLogs(basePath string, lineCh chan<- string) {
 			if err != nil {
 				if err == io.EOF {
 					time.Sleep(100 * time.Millisecond)
-					if time.Since(lastReadTime) > 100*time.Millisecond {
-						logInfo("No new consensus logs for 100 ms, switching to new file.")
+					if time.Since(lastReadTime) > 10000*time.Millisecond {
+						logInfo("No new consensus logs for 10s, switching to new file.")
 						break
 					}
 					continue
